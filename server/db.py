@@ -53,7 +53,7 @@ def getUserIDByUsername(username: str):
      return None
 
 def createHistory(userID: int, foodID: int, calories: float, fats: float, proteins: float, carbs: float):
-     sql = "INSERT INTO history (userID, time, foodID, calories, fats, proteins, carbs)"
+     sql = "INSERT INTO history (userID, time, foodID, calories, fats, proteins, carbs) VALUES (%s, %s, %s, %s, %s, %s, %s)"
      val = (userID, time.time(), foodID, calories, fats, proteins, carbs)
 
      mycursor.execute(sql, val)
@@ -77,3 +77,7 @@ def startDB():
 
      if mydb.is_connected():
           print("[+] Успех! База данных Your Diet успешно подключена.")
+
+startDB()
+createHistory(1, 14, 15.2, 16.2, 2.2, 4.2)
+closeDB()
