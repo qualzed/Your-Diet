@@ -1,0 +1,9 @@
+Брандмаузер Windows блокирует API запросы с телефона, поэтому чтобы это исправить при запуске EXPO GO с телефона
+нужно запустить Powershell от имени администратора.
+
+В Powershell пишем:
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+Это выключает настройки Файрволла
+
+Чтобы включить пишем
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True

@@ -5,14 +5,15 @@ import { useFonts } from 'expo-font';
 import { Dropdown } from 'react-native-element-dropdown';
 import { sendCalculation, getProductList } from './src/client';
 
-let BG_COLOR = '#88f34a';
-let TEXT_COLOR = '#000';
+let BG_COLOR = '#014BAA';
+let FG_COLOR = '#F8F3F0';
+let TEXT_COLOR = '#F8F3F0';
 let APP_NAME = "YOUR DIET";
 
 export default function App() {
   // Шрифт загружаем
   const [loaded] = useFonts({
-    'Rubik': require('./assets/fonts/Rubik-Regular.ttf')
+    'Exo': require('./assets/fonts/Exo2-Regular.ttf')
   });
 
   const [productsList, setProductsList] = useState([]);
@@ -84,6 +85,7 @@ export default function App() {
         <TextInput
           style={styles.input}
           placeholder="Например: 150"
+          placeholderTextColor={'#000'}
           keyboardType="numeric"
           value={weight}
           onChangeText={(text) => setWeight(text)}
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
   AppHeader: {
     textAlign: 'center',
     fontWeight: 'bold',
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontSize: 24,
     color: TEXT_COLOR,
     marginTop: 10,
@@ -128,39 +130,39 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputLabel: {
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontSize: 16,
     color: TEXT_COLOR,
     marginBottom: 5,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: FG_COLOR,
     borderRadius: 8,
     height: 45,
     paddingHorizontal: 15,
     marginBottom: 15,
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontSize: 16,
   },
   dropdown: {
-    backgroundColor: '#fff',
+    backgroundColor: FG_COLOR,
     borderRadius: 8,
     height: 45,
     paddingHorizontal: 15,
     marginBottom: 15,
   },
   placeholderStyle: {
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontSize: 16,
-    color: '#888',
+    color: '#000',
   },
   selectedTextStyle: {
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontSize: 16,
-    color: TEXT_COLOR,
+    color: '#000',
   },
   inputSearchStyle: {
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontSize: 16,
     height: 40,
     borderRadius: 8,
@@ -173,27 +175,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: TEXT_COLOR,
     fontWeight: 'bold',
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontSize: 16,
   },
   resultContainer: {
     marginHorizontal: 30,
-    backgroundColor: '#fff',
+    backgroundColor: TEXT_COLOR,
     padding: 20,
     borderRadius: 8,
     marginTop: 10,
   },
   resultTitle: {
-    fontFamily: 'Rubik',
+    fontFamily: 'Exo',
     fontWeight: 'bold',
     fontSize: 18,
     marginBottom: 10,
   },
   resultText: {
-    fontFamily: 'Rubik',
-    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'Exo',
+    fontSize: 20,
     marginBottom: 5,
   }
 });
