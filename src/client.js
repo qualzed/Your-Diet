@@ -1,8 +1,16 @@
-const API_URL = 'http://127.0.0.1:8000/calculate';
+const API_URL = 'http://127.0.0.1:8000';
 
-// export async function getProductNameByID() {
-     
-// }
+export async function getProductList() {
+  try {
+    const response = await fetch(`${API_URL}/foodNameAndID`);
+    const data = await response.json();
+    return data;
+  } catch(error) {
+    console.error("Ошибка при отправке запроса на бэкенд:", error);
+    alert("Не удалось связаться с Python сервером!");
+    return null;
+  }
+}
 
 export async function sendCalculation(productId, weightGrams) {
   // Отменяем если данные не переданы
@@ -12,7 +20,7 @@ export async function sendCalculation(productId, weightGrams) {
   }
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(`${API_URL}/calculate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
