@@ -9,7 +9,7 @@ mydb = None
 
 def read_env():
      global MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB
-     with open('.env', 'r') as f:
+     with open('./server/.env', 'r') as f:
           lines = f.readlines()
           MYSQL_HOST = lines[0].strip().strip("'").strip('"')
           MYSQL_USER = lines[1].strip().strip("'").strip('"')
@@ -52,9 +52,9 @@ def getUserIDByUsername(username: str):
           return result[0]
      return None
 
-def createHistory(userID: int, foodID: int, calories: float, fats: float, proteins: float, carbs: float):
-     sql = "INSERT INTO history (userID, time, foodID, calories, fats, proteins, carbs)"
-     val = (userID, time.time(), foodID, calories, fats, proteins, carbs)
+def createHistory(userID: int, foodID: int, grams: int, calories: float, fats: float, proteins: float, carbs: float):
+     sql = "INSERT INTO history (userID, time, foodID, grams, calories, fats, proteins, carbs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+     val = (userID, time.time(), foodID, grams, calories, fats, proteins, carbs)
 
      mycursor.execute(sql, val)
      mydb.commit()

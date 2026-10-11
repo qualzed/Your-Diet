@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import json
+import json, asyncio, traceback
+import db
 
 app = FastAPI()
 
@@ -25,6 +26,15 @@ class ReturnNameAndIDRequest(BaseModel):
     product_id: int
     product_name: str
 
+class writeHistoryRequest(BaseModel):
+    userID: int
+    foodID: int
+    grams: int
+    calories: float
+    proteins: float
+    fats: float
+    carbs: float
+
 @app.get('/foods')
 def get_all_foods():
     return food_db
@@ -42,7 +52,20 @@ def getFoodNameAndID():
         "status": "success",
         "foods": food_list
     }
-     
+
+@app.post('/writeHistory')
+async def writeHistory(data: writeHistoryRequest):
+    try:
+        db.startDB()
+        await asyncio.sleep(1)
+        db.createHistory(data.userID, data.foodID, data.grams, data.calories, data.fats, data.proteins, data.carbs)
+        await asyncio.sleep(1)
+        db.closeDB()
+        return {"status": "success"}
+    except Exception as e:
+        traceback.print_exc()
+        return {"status": "error", "message": e}
+
 @app.post('/calculate')
 def calculate_nutrients(data: CalculationRequest):
     selected_product = None # Просто инициализация

@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.1.102:8000';
+import { API_URL } from "./api/main.js";
 
 export async function getProductList() {
   try {

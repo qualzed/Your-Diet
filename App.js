@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import { useFonts } from 'expo-font';
 import { Dropdown } from 'react-native-element-dropdown';
 import { sendCalculation, getProductList } from './src/client';
+import { writeUserFoodHistory } from './src/history.js';
 
 let BG_COLOR = '#014BAA';
 let FG_COLOR = '#F8F3F0';
@@ -16,9 +17,8 @@ export default function App() {
     'Exo': require('./assets/fonts/Exo2-Regular.ttf')
   });
 
-  const [productsList, setProductsList] = useState([]);
-
   // Переменные для ввода и вывода
+  const [productsList, setProductsList] = useState([]);
   const [productId, setProductId] = useState(null);
   const [weight, setWeight] = useState('');
   const [result, setResult] = useState(null);
@@ -50,6 +50,7 @@ export default function App() {
 
     if (data && data.status === "success") {
       setResult(data);
+      // writeUserFoodHistory(1, productId, weight, data.calories, data.protein, data.fat, data.carbs);
     } else if (data) {
       alert("Ошибка: " + (data.message || JSON.stringify(data)));
     }
