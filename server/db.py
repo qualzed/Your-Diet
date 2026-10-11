@@ -54,11 +54,23 @@ def getUserIDByUsername(username: str):
 
 def createHistory(userID: int, foodID: int, grams: int, calories: float, fats: float, proteins: float, carbs: float):
      sql = "INSERT INTO history (userID, time, foodID, grams, calories, fats, proteins, carbs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-     val = (userID, time.time(), foodID, grams, calories, fats, proteins, carbs)
+     val = (userID, int(time.time()), foodID, grams, calories, fats, proteins, carbs)
 
      mycursor.execute(sql, val)
      mydb.commit()
      print(f"[LOG] История употребления пищи была зарегестрирована.")
+
+def findHistories(userID: int, timeStart: int, timeEnd: int):
+     sql = "SELECT * FROM history WHERE time >= %s AND time <= %s AND userID = %s ORDER BY time"
+     val = (timeStart, timeEnd, userID)
+
+     mycursor.execute(sql, val)
+
+     result: tuple = mycursor.fetchall()
+
+     if result:
+          return result
+     return None
 
 def startDB():
      global mycursor, mydb
@@ -77,3 +89,5 @@ def startDB():
 
      if mydb.is_connected():
           print("[+] Успех! База данных Your Diet успешно подключена.")
+
+startDB()

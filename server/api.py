@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import json, asyncio, traceback
+import json, asyncio, traceback, time
 import db
 
 app = FastAPI()
@@ -35,6 +35,10 @@ class writeHistoryRequest(BaseModel):
     fats: float
     carbs: float
 
+class getHistoryRequest(BaseModel):
+    userID: int
+    timePeriod: int # 0 - За 7 дней, 1 - 15 дней, 2 - 30 дней
+
 @app.get('/foods')
 def get_all_foods():
     return food_db
@@ -56,14 +60,27 @@ def getFoodNameAndID():
 @app.post('/writeHistory')
 async def writeHistory(data: writeHistoryRequest):
     try:
-        db.startDB()
-        await asyncio.sleep(1)
         db.createHistory(data.userID, data.foodID, data.grams, data.calories, data.fats, data.proteins, data.carbs)
-        await asyncio.sleep(1)
-        db.closeDB()
         return {"status": "success"}
     except Exception as e:
-        traceback.print_exc()
+        traceback.print_exc() # Ошибку в консоль выводит, обычный принт не хочет почемуто
+        return {"status": "error", "message": e}
+
+@app.post('/getHistory')
+async def getHistory(data:getHistoryRequest):
+    try:
+        timePeriod = 0
+        match data.timePeriod:
+            case 0:
+                timePeriod = 604800
+            case 1:
+                timePeriod = 1296000
+            case 2:
+                timePeriod = 2592000
+
+        histories: tuple = db.findHistories(data.userID, int(time.time()) - timePeriod, time.time())
+    except Exception as e:
+        traceback.print_exc() # Ошибку в консоль выводит, обычный принт не хочет почемуто
         return {"status": "error", "message": e}
 
 @app.post('/calculate')

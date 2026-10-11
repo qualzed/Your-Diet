@@ -50,7 +50,7 @@ export default function App() {
 
     if (data && data.status === "success") {
       setResult(data);
-      // writeUserFoodHistory(1, productId, weight, data.calories, data.protein, data.fat, data.carbs);
+      // writeUserFoodHistory(1, productId, weight, data.calories, data.protein, data.fat, data.carbs); // проверял, работает
     } else if (data) {
       alert("Ошибка: " + (data.message || JSON.stringify(data)));
     }
