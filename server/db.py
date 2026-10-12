@@ -36,6 +36,9 @@ def checkAuthorizationUserData(username: str, password: str) -> bool:
 
      result = mycursor.fetchone()
 
+     if result == None:
+          return False
+
      if password == result[0]:
           return True
      return False

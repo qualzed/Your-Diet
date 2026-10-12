@@ -89,7 +89,7 @@ export default function HomeScreen({ navigation }) {
 
         <Text style={styles.inputLabel}>Вес (в граммах):</Text>
         <TextInput
-            style={styles.input}
+            style={appStyle.mainStyles.input}
             placeholder="Например: 150"
             placeholderTextColor={appStyle.WHITE}
             keyboardType="numeric"
@@ -97,18 +97,18 @@ export default function HomeScreen({ navigation }) {
             onChangeText={(text) => setWeight(text)}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleCalculate}>
-              <Text style={styles.buttonText}>РАССЧИТАТЬ БЖУ</Text>
+        <TouchableOpacity style={appStyle.mainStyles.button} onPress={handleCalculate}>
+          <Text style={appStyle.mainStyles.buttonText}>РАССЧИТАТЬ БЖУ</Text>
         </TouchableOpacity>
         </View>
 
         {result && (
         <View style={styles.resultContainer}>
-              <Text style={styles.resultTitle}>Продукт: {result.product_name}</Text>
-              <Text style={styles.resultText}>Калории: {result.calories} калорий</Text>
-              <Text style={styles.resultText}>Белки: {result.protein} г</Text>
-              <Text style={styles.resultText}>Жиры: {result.fat} г</Text>
-              <Text style={styles.resultText}>Углеводы: {result.carbs} г</Text>
+          <Text style={styles.resultTitle}>Продукт: {result.product_name}</Text>
+          <Text style={styles.resultText}>Калории: {result.calories} калорий</Text>
+          <Text style={styles.resultText}>Белки: {result.protein} г</Text>
+          <Text style={styles.resultText}>Жиры: {result.fat} г</Text>
+          <Text style={styles.resultText}>Углеводы: {result.carbs} г</Text>
         </View>
         )}
     </View>
@@ -122,13 +122,13 @@ const styles = StyleSheet.create({
     backgroundColor: appStyle.BG_COLOR,
   },
   AppHeader: {
+    marginTop: '20%',
     textAlign: 'center',
     fontWeight: 'bold',
     fontFamily: 'Exo',
     fontSize: 34,
     letterSpacing: 6,
     color: appStyle.FG_COLOR,
-    marginTop: 40,
     marginBottom: 36,
     textShadowColor: appStyle.FG_COLOR,
     textShadowOffset: { width: 0, height: 0 },
@@ -155,18 +155,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: appStyle.MUTED,
     marginBottom: 8,
-  },
-  input: {
-    backgroundColor: appStyle.SURFACE_2,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: appStyle.BORDER,
-    height: 52,
-    paddingHorizontal: 16,
-    marginBottom: 20,
-    fontFamily: 'Exo',
-    fontSize: 17,
-    color: appStyle.WHITE,
   },
   dropdown: {
     backgroundColor: appStyle.SURFACE_2,
@@ -207,26 +195,6 @@ const styles = StyleSheet.create({
     color: appStyle.WHITE,
     backgroundColor: appStyle.SURFACE_2,
     borderColor: appStyle.BORDER,
-  },
-  button: {
-    backgroundColor: appStyle.FG_COLOR,
-    height: 56,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 4,
-    shadowColor: appStyle.FG_COLOR,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.6,
-    shadowRadius: 14,
-    elevation: 12,
-  },
-  buttonText: {
-    color: appStyle.WHITE,
-    fontWeight: 'bold',
-    fontFamily: 'Exo',
-    fontSize: 17,
-    letterSpacing: 2,
   },
   resultContainer: {
     marginHorizontal: 20,

@@ -1,16 +1,17 @@
 import { createAsyncStorage } from "@react-native-async-storage/async-storage";
 import { API_URL } from "../api/main.js";
-// import storage from "./storage.js";
+import storage from "./storage.js";
 
-// export async function checkAuthorization() {
-//      const authorizedStatus = await storage.getItem("authorized");
-//      if (!authorizedStatus) return console.error("Не найден предмет authorizedStatus.");
-//      return authorizedStatus
-// }
+export async function checkAuthorization() {
+     const authorizedStatus = await storage.getItem("authorized");
+     if (!authorizedStatus) return console.error("Не найден предмет authorizedStatus.");
+     return authorizedStatus
+}
 
 export async function sendAutharization(username, password) {
      if (!username || !password) {
           console.warn("Не передан логин или пароль.");
+          alert("Вы не указали логил или пароль!");
           return null;
      }
      try {
@@ -30,6 +31,7 @@ export async function sendAutharization(username, password) {
           return data;
 
      } catch (error) {
+          alert("Произошла неизвестная ошибка! Если вы разработчик - посмотрите консоль.")
           console.error("Ошибка при отправке запроса на бэкенд:", error);
           return null;
      }
