@@ -5,18 +5,10 @@ import { useFonts } from 'expo-font';
 import { Dropdown } from 'react-native-element-dropdown';
 import { sendCalculation, getProductList } from '../client';
 import { TextInput, TouchableOpacity, Pressable, Keyboard } from 'react-native';
-import { writeUserFoodHistory } from './history.js';
+import { writeUserFoodHistory } from './historyScreen.js';
 import { StyleSheet, Text, View } from 'react-native';
+import * as appStyle from './styles/main.js';
 
-export const TAB_COLOR = '#C1121F';
-export const BG_COLOR = '#080808';
-export const FG_COLOR = '#C1121F';
-export const TEXT_COLOR = '#C1121F';
-const SURFACE = '#121212';
-const SURFACE_2 = '#1A1A1A';
-const BORDER = '#2A2A2A';
-const MUTED = '#8A8A8A';
-const WHITE = '#F5F5F5';
 let APP_NAME = "YOUR DIET";
 
 export default function HomeScreen({ navigation }) {
@@ -32,13 +24,13 @@ export default function HomeScreen({ navigation }) {
   const [result, setResult] = useState(null);
 
   const handleFoodList = async () => {
-  const data = await getProductList();
+    const data = await getProductList();
 
-  if (data && data.status === "success") {
-      setProductsList(data.foods);
-  } else if (data) {
-      alert("Ошибка: " + data.message);
-  }
+    if (data && data.status === "success") {
+        setProductsList(data.foods);
+    } else if (data) {
+        alert("Ошибка: " + data.message);
+    }
   };
 
   useEffect(() => {
@@ -81,8 +73,8 @@ export default function HomeScreen({ navigation }) {
           inputSearchStyle={styles.inputSearchStyle}
           containerStyle={styles.dropdownList}
           itemTextStyle={styles.itemText}
-          activeColor={SURFACE_2}
-          iconColor={FG_COLOR}
+          activeColor={appStyle.SURFACE_2}
+          iconColor={appStyle.FG_COLOR}
           data={productsList}
           search
           searchPlaceholder="Поиск..."
@@ -99,7 +91,7 @@ export default function HomeScreen({ navigation }) {
         <TextInput
             style={styles.input}
             placeholder="Например: 150"
-            placeholderTextColor={WHITE}
+            placeholderTextColor={appStyle.WHITE}
             keyboardType="numeric"
             value={weight}
             onChangeText={(text) => setWeight(text)}
@@ -127,7 +119,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BG_COLOR,
+    backgroundColor: appStyle.BG_COLOR,
   },
   AppHeader: {
     textAlign: 'center',
@@ -135,10 +127,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Exo',
     fontSize: 34,
     letterSpacing: 6,
-    color: FG_COLOR,
+    color: appStyle.FG_COLOR,
     marginTop: 40,
     marginBottom: 36,
-    textShadowColor: 'rgba(193, 18, 31, 0.7)',
+    textShadowColor: appStyle.FG_COLOR,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 18,
   },
@@ -146,11 +138,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
     padding: 22,
-    backgroundColor: SURFACE,
+    backgroundColor: appStyle.SURFACE,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: BORDER,
-    shadowColor: FG_COLOR,
+    borderColor: appStyle.BORDER,
+    shadowColor: appStyle.FG_COLOR,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.25,
     shadowRadius: 20,
@@ -161,76 +153,76 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
-    color: MUTED,
+    color: appStyle.MUTED,
     marginBottom: 8,
   },
   input: {
-    backgroundColor: SURFACE_2,
+    backgroundColor: appStyle.SURFACE_2,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: appStyle.BORDER,
     height: 52,
     paddingHorizontal: 16,
     marginBottom: 20,
     fontFamily: 'Exo',
     fontSize: 17,
-    color: WHITE,
+    color: appStyle.WHITE,
   },
   dropdown: {
-    backgroundColor: SURFACE_2,
+    backgroundColor: appStyle.SURFACE_2,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: appStyle.BORDER,
     height: 52,
     paddingHorizontal: 16,
     marginBottom: 20,
   },
   dropdownList: {
-    backgroundColor: SURFACE,
+    backgroundColor: appStyle.SURFACE,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: appStyle.BORDER,
     overflow: 'hidden',
   },
   itemText: {
     fontFamily: 'Exo',
     fontSize: 16,
-    color: WHITE,
+    color: appStyle.WHITE,
   },
   placeholderStyle: {
     fontFamily: 'Exo',
     fontSize: 17,
-    color: MUTED,
+    color: appStyle.MUTED,
   },
   selectedTextStyle: {
     fontFamily: 'Exo',
     fontSize: 17,
-    color: WHITE,
+    color: appStyle.WHITE,
   },
   inputSearchStyle: {
     fontFamily: 'Exo',
     fontSize: 16,
     height: 44,
     borderRadius: 10,
-    color: WHITE,
-    backgroundColor: SURFACE_2,
-    borderColor: BORDER,
+    color: appStyle.WHITE,
+    backgroundColor: appStyle.SURFACE_2,
+    borderColor: appStyle.BORDER,
   },
   button: {
-    backgroundColor: FG_COLOR,
+    backgroundColor: appStyle.FG_COLOR,
     height: 56,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 4,
-    shadowColor: FG_COLOR,
+    shadowColor: appStyle.FG_COLOR,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.6,
     shadowRadius: 14,
     elevation: 12,
   },
   buttonText: {
-    color: WHITE,
+    color: appStyle.WHITE,
     fontWeight: 'bold',
     fontFamily: 'Exo',
     fontSize: 17,
@@ -238,15 +230,15 @@ const styles = StyleSheet.create({
   },
   resultContainer: {
     marginHorizontal: 20,
-    backgroundColor: SURFACE,
+    backgroundColor: appStyle.SURFACE,
     padding: 22,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: appStyle.BORDER,
     borderLeftWidth: 5,
-    borderLeftColor: FG_COLOR,
+    borderLeftColor: appStyle.FG_COLOR,
     marginTop: 4,
-    shadowColor: FG_COLOR,
+    shadowColor: appStyle.FG_COLOR,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 16,
@@ -256,17 +248,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Exo',
     fontWeight: 'bold',
     fontSize: 20,
-    color: FG_COLOR,
+    color: appStyle.FG_COLOR,
     marginBottom: 14,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: BORDER,
+    borderBottomColor: appStyle.BORDER,
   },
   resultText: {
     fontWeight: 'bold',
     fontFamily: 'Exo',
     fontSize: 18,
-    color: WHITE,
+    color: appStyle.WHITE,
     marginBottom: 8,
   },
 });

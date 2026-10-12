@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS accounts (
      id INTEGER NOT NULL AUTO_INCREMENT,
+     mail varchar(128), -- Но в коде сделать чтобы нельзя меньше 6 было до собачки
      username VARCHAR(16), -- Не больше чем 16 символов в юзернейме
-     pass VARCHAR(32), -- Пароль
+     password VARCHAR(32), -- Пароль
      age INTEGER,
      gender INTEGER,  -- 0 - не указан, 1 - мужчина, 2 - женщина
      PRIMARY KEY (id), UNIQUE (username)

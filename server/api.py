@@ -39,6 +39,10 @@ class getHistoryRequest(BaseModel):
     userID: int
     timePeriod: int # 0 - За 7 дней, 1 - 15 дней, 2 - 30 дней
 
+class userAuthorizationRequest(BaseModel):
+    username: str
+    password: str
+
 @app.get('/foods')
 def get_all_foods():
     return food_db
@@ -111,3 +115,13 @@ def calculate_nutrients(data: CalculationRequest):
         "fat": round(total_fat, 2),
         "carbs": round(total_carbs, 2)
     }
+
+@app.post("/authorizeUser")
+def userAuthorization(data: userAuthorizationRequest):
+    try:
+        if db.checkAuthorizationUserData(data.username, data.password):
+            return {"status": "success"}
+        else:
+            return {"status": "error", "message": "Неправильный логин или пароль."}
+    except Exception as e:
+        return {"status": "backend_error", "details": str(e)}

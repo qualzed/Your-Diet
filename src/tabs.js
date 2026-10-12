@@ -5,13 +5,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { FG_COLOR, TAB_COLOR} from './pages/appScreen';
 
 import HomeScreen from './pages/appScreen';
-import SettingsScreen from './pages/settings';
-import historyScreen from './pages/history';
+import SettingsScreen from './pages/settingsScreen';
+import historyScreen from './pages/historyScreen';
+import accountScreen from './pages/accountScreen';
 
 export const Tab = createBottomTabNavigator();
 
 const TAB_RADIUS = 32;
-const INACTIVE = '#8A8A8A';
+const INACTIVE = '#707070';
 
 export default function TabsPanel() {
   return (
@@ -28,8 +29,9 @@ export default function TabsPanel() {
           tabBarIcon: ({ focused, color }) => {
             const icons = {
               Home: focused ? 'nutrition' : 'nutrition-outline',
-              History: focused ? 'history' : 'refresh',
+              History: focused ? 'refresh-outline' : 'refresh',
               Settings: focused ? 'settings' : 'settings-outline',
+              Account: focused ? 'accessibility' : 'accessibility-outline'
             };
             return <Ionicons name={icons[route.name]} size={24} color={color} />;
           },
@@ -38,6 +40,7 @@ export default function TabsPanel() {
         <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Главная' }} />
         <Tab.Screen name="History" component={historyScreen} options={{ title: 'История' }} />
         <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: 'Настройки' }} />
+        <Tab.Screen name="Account" component={accountScreen} options={{ title: 'Аккаунт' }} />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -1,0 +1,9 @@
+export const TAB_COLOR = '#259252';
+export const BG_COLOR = '#080808';
+export const FG_COLOR = '#259252';
+export const TEXT_COLOR = '#259252';
+export const SURFACE = '#121212';
+export const SURFACE_2 = '#1A1A1A';
+export const BORDER = '#2A2A2A';
+export const MUTED = '#8A8A8A';
+export const WHITE = '#F5F5F5';

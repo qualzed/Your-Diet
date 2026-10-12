@@ -21,12 +21,24 @@ def closeDB():
      mydb.close()
 
 def registerUser(username: str, password: str):
-     sql = "INSERT INTO accounts (username, pass) VALUES (%s, %s)"
+     sql = "INSERT INTO accounts (username, password) VALUES (%s, %s)"
      val = (username, password)
      
      mycursor.execute(sql, val)
      mydb.commit()
      print(f"[LOG] Пользователь {username} успешно зарегистрирован в БД!")
+
+def checkAuthorizationUserData(username: str, password: str) -> bool:
+     sql = "SELECT password FROM accounts WHERE username = %s"
+     val = (username,)
+
+     mycursor.execute(sql, val)
+
+     result = mycursor.fetchone()
+
+     if password == result[0]:
+          return True
+     return False
 
 def getUsernameByUserID(userID: int):
      sql = "SELECT username FROM accounts WHERE id = %s"
