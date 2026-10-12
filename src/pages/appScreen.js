@@ -5,12 +5,18 @@ import { useFonts } from 'expo-font';
 import { Dropdown } from 'react-native-element-dropdown';
 import { sendCalculation, getProductList } from '../client';
 import { TextInput, TouchableOpacity, Pressable, Keyboard } from 'react-native';
-import { writeUserFoodHistory } from '../history.js';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { writeUserFoodHistory } from './history.js';
+import { StyleSheet, Text, View } from 'react-native';
 
-let BG_COLOR = '#014BAA';
-let FG_COLOR = '#F8F3F0';
-let TEXT_COLOR = '#F8F3F0';
+export const TAB_COLOR = '#C1121F';
+export const BG_COLOR = '#080808';
+export const FG_COLOR = '#C1121F';
+export const TEXT_COLOR = '#C1121F';
+const SURFACE = '#121212';
+const SURFACE_2 = '#1A1A1A';
+const BORDER = '#2A2A2A';
+const MUTED = '#8A8A8A';
+const WHITE = '#F5F5F5';
 let APP_NAME = "YOUR DIET";
 
 export default function HomeScreen({ navigation }) {
@@ -73,6 +79,10 @@ export default function HomeScreen({ navigation }) {
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
+          containerStyle={styles.dropdownList}
+          itemTextStyle={styles.itemText}
+          activeColor={SURFACE_2}
+          iconColor={FG_COLOR}
           data={productsList}
           search
           searchPlaceholder="Поиск..."
@@ -89,7 +99,7 @@ export default function HomeScreen({ navigation }) {
         <TextInput
             style={styles.input}
             placeholder="Например: 150"
-            placeholderTextColor={'#000'}
+            placeholderTextColor={WHITE}
             keyboardType="numeric"
             value={weight}
             onChangeText={(text) => setWeight(text)}
@@ -123,83 +133,140 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontFamily: 'Exo',
-    fontSize: 24,
-    color: TEXT_COLOR,
-    marginTop: 10,
-    marginBottom: 50,
+    fontSize: 34,
+    letterSpacing: 6,
+    color: FG_COLOR,
+    marginTop: 40,
+    marginBottom: 36,
+    textShadowColor: 'rgba(193, 18, 31, 0.7)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 18,
   },
   formContainer: {
-    paddingHorizontal: 30,
+    marginHorizontal: 20,
     marginBottom: 20,
+    padding: 22,
+    backgroundColor: SURFACE,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: BORDER,
+    shadowColor: FG_COLOR,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 10,
   },
   inputLabel: {
     fontFamily: 'Exo',
-    fontSize: 16,
-    color: TEXT_COLOR,
-    marginBottom: 5,
+    fontSize: 13,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    color: MUTED,
+    marginBottom: 8,
   },
   input: {
-    backgroundColor: FG_COLOR,
-    borderRadius: 8,
-    height: 45,
-    paddingHorizontal: 15,
-    marginBottom: 15,
+    backgroundColor: SURFACE_2,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: BORDER,
+    height: 52,
+    paddingHorizontal: 16,
+    marginBottom: 20,
     fontFamily: 'Exo',
-    fontSize: 16,
+    fontSize: 17,
+    color: WHITE,
   },
   dropdown: {
-    backgroundColor: FG_COLOR,
-    borderRadius: 8,
-    height: 45,
-    paddingHorizontal: 15,
-    marginBottom: 15,
+    backgroundColor: SURFACE_2,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: BORDER,
+    height: 52,
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  dropdownList: {
+    backgroundColor: SURFACE,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: BORDER,
+    overflow: 'hidden',
+  },
+  itemText: {
+    fontFamily: 'Exo',
+    fontSize: 16,
+    color: WHITE,
   },
   placeholderStyle: {
     fontFamily: 'Exo',
-    fontSize: 16,
-    color: '#000',
+    fontSize: 17,
+    color: MUTED,
   },
   selectedTextStyle: {
     fontFamily: 'Exo',
-    fontSize: 16,
-    color: '#000',
+    fontSize: 17,
+    color: WHITE,
   },
   inputSearchStyle: {
     fontFamily: 'Exo',
     fontSize: 16,
-    height: 40,
-    borderRadius: 8,
+    height: 44,
+    borderRadius: 10,
+    color: WHITE,
+    backgroundColor: SURFACE_2,
+    borderColor: BORDER,
   },
   button: {
-    backgroundColor: '#000',
-    height: 48,
-    borderRadius: 8,
+    backgroundColor: FG_COLOR,
+    height: 56,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 4,
+    shadowColor: FG_COLOR,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.6,
+    shadowRadius: 14,
+    elevation: 12,
   },
   buttonText: {
-    color: TEXT_COLOR,
+    color: WHITE,
     fontWeight: 'bold',
     fontFamily: 'Exo',
-    fontSize: 16,
+    fontSize: 17,
+    letterSpacing: 2,
   },
   resultContainer: {
-    marginHorizontal: 30,
-    backgroundColor: TEXT_COLOR,
-    padding: 20,
-    borderRadius: 8,
-    marginTop: 10,
+    marginHorizontal: 20,
+    backgroundColor: SURFACE,
+    padding: 22,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: BORDER,
+    borderLeftWidth: 5,
+    borderLeftColor: FG_COLOR,
+    marginTop: 4,
+    shadowColor: FG_COLOR,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
   },
   resultTitle: {
     fontFamily: 'Exo',
     fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 20,
+    color: FG_COLOR,
+    marginBottom: 14,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: BORDER,
   },
   resultText: {
     fontWeight: 'bold',
     fontFamily: 'Exo',
-    fontSize: 20,
-    marginBottom: 5,
-  }
+    fontSize: 18,
+    color: WHITE,
+    marginBottom: 8,
+  },
 });
