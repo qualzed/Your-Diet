@@ -81,7 +81,7 @@ def getUserIDByUsername(username: str):
      return row["id"] if row else None
 
 def getUserProfile(username: str):
-     return _run("SELECT mail, gender FROM accounts WHERE username = %s", (username,), fetch="one")
+     return _run("SELECT mail, gender, id FROM accounts WHERE username = %s", (username,), fetch="one")
 
 def createHistory(userID: int, foodID: int, grams: int, calories: float, fats: float, proteins: float, carbs: float):
      _run(

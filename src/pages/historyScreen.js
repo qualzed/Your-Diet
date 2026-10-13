@@ -1,4 +1,8 @@
 import { StyleSheet, Text, View, Button } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import * as appStyle from './styles/main.js';
+import { isUserLoggedIn } from '../account/user.js';
 import { API_URL } from "../api/main.js";
 
 export async function writeUserFoodHistory(userID, foodID, grams, calories, protein, fat, carbs) {
@@ -30,12 +34,7 @@ export async function writeUserFoodHistory(userID, foodID, grams, calories, prot
 export default function historyScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>История приёмов пищи</Text>
       
-      <Button 
-        title="Назад на главную" 
-        onPress={() => navigation.goBack()} 
-      />
     </View>
   );
 };
@@ -43,14 +42,6 @@ export default function historyScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    backgroundColor: appStyle.BG_COLOR,
   },
 });

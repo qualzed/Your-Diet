@@ -131,7 +131,7 @@ def getUserProfile(data: userProfileRequest):
         profile = db.getUserProfile(data.username)
         if profile is None:
             return {"status": "error", "message": "Пользователь не найден."}
-        return {"status": "success", "mail": profile["mail"], "gender": profile["gender"]}
+        return {"status": "success", "mail": profile["mail"], "gender": profile["gender"], "userID": profile["id"]}
     except Exception as e:
         traceback.print_exc()
         return {"status": "backend_error", "details": str(e)}

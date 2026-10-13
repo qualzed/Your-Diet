@@ -6,11 +6,11 @@ import { sendAutharization, isUserLoggedIn, makeUserLoggedIn, unlogUser, sendReg
 import * as appStyle from './styles/main.js'
 
 const GENDERS = { 0: 'мужчина', 1: 'женщина' };
-const EMPTY_PROFILE = { username: '', mail: '', gender: null };
+const EMPTY_PROFILE = { username: '', mail: '', gender: null, userID: null };
 
 export default function accountScreen({ navigation }) {
   const [profile, setProfile] = useState(EMPTY_PROFILE);
-
+  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [userMail, setUserMail] = useState('');
@@ -27,7 +27,7 @@ export default function accountScreen({ navigation }) {
 
     const data = await getUserProfile(savedUsername);
     if (data && data.status === "success") {
-      setProfile({ username: savedUsername, mail: data.mail, gender: data.gender });
+      setProfile({ username: savedUsername, mail: data.mail, gender: data.gender, userID: data.userID });
     }
   };
 

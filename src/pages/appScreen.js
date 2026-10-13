@@ -8,6 +8,7 @@ import { TextInput, TouchableOpacity, Pressable, Keyboard } from 'react-native';
 import { writeUserFoodHistory } from './historyScreen.js';
 import { StyleSheet, Text, View } from 'react-native';
 import * as appStyle from './styles/main.js';
+import { isUserLoggedIn } from '../account/user.js';
 
 let APP_NAME = "YOUR DIET";
 
@@ -49,7 +50,10 @@ export default function HomeScreen({ navigation }) {
 
     if (data && data.status === "success") {
         setResult(data);
-        // writeUserFoodHistory(1, productId, weight, data.calories, data.protein, data.fat, data.carbs); // проверял, работает
+        const isLogged = await isUserLoggedIn();
+        if (isLogged === true) {
+          writeUserFoodHistory(1, productId, weight, data.calories, data.protein, data.fat, data.carbs);
+        }
     } else if (data) {
         alert("Ошибка: " + (data.message || JSON.stringify(data)));
     }
