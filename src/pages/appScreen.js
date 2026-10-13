@@ -14,7 +14,7 @@ let APP_NAME = "YOUR DIET";
 export default function HomeScreen({ navigation }) {
   // Шрифт загружаем
   const [loaded] = useFonts({
-  'Exo': require('./../../assets/fonts/Exo2-Regular.ttf')
+    'Exo': require('./../../assets/fonts/Exo2-Regular.ttf')
   });
 
   // Переменные для ввода и вывода

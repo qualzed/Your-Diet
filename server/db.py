@@ -19,6 +19,7 @@ def read_env():
 def closeDB():
      mycursor.close()
      mydb.close()
+     print("[+] База данных была закрыта.")
 
 def registerUser(username: str, password: str):
      if userExist(username=username):

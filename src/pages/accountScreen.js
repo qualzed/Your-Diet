@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { TextInput, TouchableOpacity, Pressable, Keyboard } from 'react-native';
-import { sendAutharization, isUserLoggedIn, makeUserLoggedIn, unlogUser, sendRegistration } from '../account/user.js';
+import { useFonts } from 'expo-font';
+import { sendAutharization, isUserLoggedIn, makeUserLoggedIn, unlogUser, sendRegistration, getUserUsername, setUserUsername } from '../account/user.js';
 import * as appStyle from './styles/main.js'
 
 export default function accountScreen({ navigation }) {
+  const [userLogin, setUserLogin] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [secure, setSecure] = useState(true);
@@ -20,13 +22,19 @@ export default function accountScreen({ navigation }) {
         console.error(e);
       }
     }
+    const handleUserLogin = async () => {
+      const username = await getUserUsername();
+      setUserLogin(username);
+    }
     checkStatus();
+    handleUserLogin();
   }, []); // Пустой массив чтобы сработало один раз, не более
 
   const handleSendAutharization = async () => { 
     const data = await sendAutharization(username, password);
     if (data && data.status === "success") {
       await makeUserLoggedIn();
+      await setUserUsername(username);
       setAuthorized(true);
       console.log("Пользователь был авторизован.");
     } else if (data) {
@@ -42,6 +50,7 @@ export default function accountScreen({ navigation }) {
     const data = await sendRegistration(username, password);
     if (data && data.status === "success") {
       await makeUserLoggedIn();
+      await setUserUsername(username);
       setIsRegistering(false);
       setAuthorized(true);
       console.log("Пользователь был зарегестрирован.");
@@ -104,10 +113,15 @@ export default function accountScreen({ navigation }) {
           </TouchableOpacity>
         </View>
         )}
+
         {authorized && ( // Страница если авторизован
-        <TouchableOpacity style={styles.leaveAccount} onPress={() => unlogUserAccept()}>
-          <Text style={styles.leaveAccountText}>Выйти из аккаунта</Text>
-        </TouchableOpacity>
+        <View>
+          <Text style={styles.userData}>Привет, {userLogin}!</Text>
+
+          <TouchableOpacity style={styles.leaveAccount} onPress={() => unlogUserAccept()}>
+            <Text style={styles.leaveAccountText}>Выйти из аккаунта</Text>
+          </TouchableOpacity>
+        </View>
         )}
 
         {isRegistering && ( // Регистрация
@@ -174,8 +188,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Exo',
     fontSize: 20,
   },
+  userData: {
+    color: '#fff',
+    fontSize: 32,
+    fontFamily: 'Exo',
+    textAlign: 'center',
+    paddingTop: '20%'
+  },
   leaveAccount: {
+    position: 'absolute',
     alignItems: 'center',
+    width: '90%',
     backgroundColor: '#d62525',
     marginHorizontal: 20,
     padding: 16,

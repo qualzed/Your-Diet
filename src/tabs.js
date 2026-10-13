@@ -29,7 +29,7 @@ export default function TabsPanel() {
             const icons = {
               Home: focused ? 'nutrition' : 'nutrition-outline',
               History: focused ? 'refresh-outline' : 'refresh',
-              Account: focused ? 'accessibility' : 'accessibility-outline'
+              Account: focused ? 'at-circle' : 'at-circle-outline'
             };
             return <Ionicons name={icons[route.name]} size={24} color={color} />;
           },

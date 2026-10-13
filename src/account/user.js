@@ -83,6 +83,9 @@ export const unlogUser = async () => {
      await storage.removeItem("loginStatus");
 }
 
-export const getUserLogin = async () => {
-     return await storage.getItem("login");
+export const getUserUsername = async () => {
+     return await storage.getItem("username");
 };
+export const setUserUsername = async (username) => {
+     await storage.setItem("username", username)
+}
