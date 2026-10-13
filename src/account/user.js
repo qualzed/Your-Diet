@@ -31,10 +31,9 @@ export async function sendAutharization(username, password) {
      }
 }
 
-export async function sendRegistration(username, password) {
-     if (!username || !password) {
-          console.warn("Не передан логин или пароль.");
-          alert("Вы не указали логин или пароль!");
+export async function sendRegistration(username, password, mail, gender) {
+     if (!username || !password || !mail) {
+          alert(`Вы забыли что-то указать...`);
           return null;
      }
      try {
@@ -45,7 +44,9 @@ export async function sendRegistration(username, password) {
                },
                body: JSON.stringify({
                     username: username.toString(),
-                    password: password.toString()
+                    password: password.toString(), 
+                    mail: mail.toString(),
+                    gender: parseInt(gender) // 0 - мужчина, 1 - женщина
                }),
           });
 
@@ -77,15 +78,32 @@ export const isUserLoggedIn = async () => {
 
 export const makeUserLoggedIn = async () => {
      await storage.setItem("loginStatus", "true");
+};
+
+export async function getUserProfile(username) {
+     if (!username) return null;
+     try {
+          const response = await fetch(`${API_URL}/getUserProfile`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ username: username.toString() }),
+          });
+          return await response.json();
+     } catch (error) {
+          console.error("Ошибка при получении профиля:", error);
+          return null;
+     }
 }
 
 export const unlogUser = async () => {
      await storage.removeItem("loginStatus");
-}
+     await storage.removeItem("username");
+};
 
 export const getUserUsername = async () => {
      return await storage.getItem("username");
 };
+
 export const setUserUsername = async (username) => {
      await storage.setItem("username", username)
-}
+};

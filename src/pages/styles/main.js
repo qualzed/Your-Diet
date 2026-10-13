@@ -18,7 +18,7 @@ export const mainStyles = StyleSheet.create({
           borderColor: BORDER,
           height: 52,
           paddingHorizontal: 16,
-          marginBottom: 20,
+          marginBottom: 16,
           fontFamily: 'Exo',
           fontSize: 17,
           color: WHITE,
@@ -33,7 +33,7 @@ export const mainStyles = StyleSheet.create({
           shadowColor: FG_COLOR,
           shadowOffset: { width: 0, height: 6 },
           shadowOpacity: 0.6,
-          shadowRadius: 14,
+          shadowRadius: 8,
           elevation: 12,
      },
      buttonText: {

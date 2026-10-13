@@ -34,25 +34,25 @@ export default function HomeScreen({ navigation }) {
   };
 
   useEffect(() => {
-  if (loaded) {
-      handleFoodList();
-  }
+    if (loaded) {
+        handleFoodList();
+    }
   }, [loaded]);
 
   const handleCalculate = async () => {
-  if (!productId || !weight) {
+    if (!productId || !weight) {
       alert("Пожалуйста, заполните все поля!");
       return;
-  }
+    }
 
-  const data = await sendCalculation(productId, weight);
+    const data = await sendCalculation(productId, weight);
 
-  if (data && data.status === "success") {
-      setResult(data);
-      // writeUserFoodHistory(1, productId, weight, data.calories, data.protein, data.fat, data.carbs); // проверял, работает
-  } else if (data) {
-      alert("Ошибка: " + (data.message || JSON.stringify(data)));
-  }
+    if (data && data.status === "success") {
+        setResult(data);
+        // writeUserFoodHistory(1, productId, weight, data.calories, data.protein, data.fat, data.carbs); // проверял, работает
+    } else if (data) {
+        alert("Ошибка: " + (data.message || JSON.stringify(data)));
+    }
   };
 
   if (!loaded) return null;

@@ -1,80 +1,88 @@
 import { useEffect, useState } from 'react';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { TextInput, TouchableOpacity, Pressable, Keyboard } from 'react-native';
-import { useFonts } from 'expo-font';
-import { sendAutharization, isUserLoggedIn, makeUserLoggedIn, unlogUser, sendRegistration, getUserUsername, setUserUsername } from '../account/user.js';
+import { sendAutharization, isUserLoggedIn, makeUserLoggedIn, unlogUser, sendRegistration, getUserUsername, setUserUsername, getUserProfile } from '../account/user.js';
 import * as appStyle from './styles/main.js'
 
+const GENDERS = { 0: 'мужчина', 1: 'женщина' };
+const EMPTY_PROFILE = { username: '', mail: '', gender: null };
+
 export default function accountScreen({ navigation }) {
-  const [userLogin, setUserLogin] = useState('');
+  const [profile, setProfile] = useState(EMPTY_PROFILE);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [userMail, setUserMail] = useState('');
+  const [formGender, setFormGender] = useState(); // 0 - мужчина, 1 - женщина
   const [secure, setSecure] = useState(true);
+
   const [authorized, setAuthorized] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
 
-  useEffect(() => {
-    const checkStatus = async () => {
-      try {
-        const loggedIn = await isUserLoggedIn();
-        setAuthorized(loggedIn);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    const handleUserLogin = async () => {
-      const username = await getUserUsername();
-      setUserLogin(username);
-    }
-    checkStatus();
-    handleUserLogin();
-  }, []); // Пустой массив чтобы сработало один раз, не более
+  // Берёт логин из storage и запрашивает остальное у сервера
+  const loadProfile = async () => {
+    const savedUsername = await getUserUsername();
+    if (!savedUsername) return;
 
-  const handleSendAutharization = async () => { 
-    const data = await sendAutharization(username, password);
+    const data = await getUserProfile(savedUsername);
     if (data && data.status === "success") {
-      await makeUserLoggedIn();
-      await setUserUsername(username);
-      setAuthorized(true);
-      console.log("Пользователь был авторизован.");
-    } else if (data) {
-      if (data.message === "undefined") {
-        alert("Не удалось авторизоваться по вашим данным. Проверьте логин и пароль.");
-      } else {
-        alert("Ошибка: " + data.message);
-      }
+      setProfile({ username: savedUsername, mail: data.mail, gender: data.gender });
     }
   };
 
-  const handleSendRegistration = async () => { 
-    const data = await sendRegistration(username, password);
+  // Один раз при запуске
+  useEffect(() => {
+    (async () => {
+      const loggedIn = await isUserLoggedIn();
+      setAuthorized(loggedIn);
+      if (loggedIn) await loadProfile();
+    })();
+  }, []);
+
+  // Общая часть после успешного входа или регистрации
+  const finishLogin = async () => {
+    await makeUserLoggedIn();
+    await setUserUsername(username);
+    await loadProfile();
+    setPassword('');
+    setIsRegistering(false);
+    setAuthorized(true);
+  };
+
+  const handleSendAutharization = async () => {
+    const data = await sendAutharization(username, password);
     if (data && data.status === "success") {
-      await makeUserLoggedIn();
-      await setUserUsername(username);
-      setIsRegistering(false);
-      setAuthorized(true);
-      console.log("Пользователь был зарегестрирован.");
+      await finishLogin();
+    } else if (data) {
+      alert(data.message === "undefined"
+        ? "Не удалось авторизоваться по вашим данным. Проверьте логин и пароль."
+        : "Ошибка: " + data.message);
+    }
+  };
+
+  const handleSendRegistration = async () => {
+    const data = await sendRegistration(username, password, userMail, formGender);
+    if (data && data.status === "success") {
+      await finishLogin();
     } else if (data) {
       alert("Ошибка: " + data.message);
     }
   };
 
-  const unlogUserAccept = async () => {
-    Alert.alert(
-      'Подтверждение',
-      'Вы уверены, что хотите выйти из аккаунта?',
-      [
-        {
-          text: 'Нет',
-          style: 'cancel',
+  const unlogUserAccept = () => {
+    Alert.alert('Подтверждение', 'Вы уверены, что хотите выйти из аккаунта?', [
+      { text: 'Нет', style: 'cancel' },
+      {
+        text: 'Да',
+        onPress: async () => {
+          await unlogUser();
+          setProfile(EMPTY_PROFILE);
+          setUsername('');
+          setAuthorized(false);
         },
-        {
-          text: 'Да',
-          onPress: () => (unlogUser(), setAuthorized(false)),
-        },
-      ],
-      { cancelable: true }
-    );
+      },
+    ], { cancelable: true });
   };
 
   return (
@@ -102,7 +110,7 @@ export default function accountScreen({ navigation }) {
             value={password}
           />
           <TouchableOpacity onPress={() => setSecure(!secure)}>
-            <Text style={{color: appStyle.MUTED, bottom: 15, textAlign: 'center'}}>Посмотреть пароль</Text>
+            <Text style={{color: appStyle.MUTED, bottom: 10, textAlign: 'center'}}>Посмотреть пароль</Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={appStyle.mainStyles.button} onPress={handleSendAutharization}>
@@ -114,11 +122,13 @@ export default function accountScreen({ navigation }) {
         </View>
         )}
 
-        {authorized && ( // Страница если авторизован
+        {authorized && (
         <View>
-          <Text style={styles.userData}>Привет, {userLogin}!</Text>
+          <Text style={styles.userData}>Привет, {profile.username}!</Text>
+          <Text style={styles.userData}>Вы, {GENDERS[profile.gender]}!</Text>
+          <Text style={styles.userData}>{profile.mail}</Text>
 
-          <TouchableOpacity style={styles.leaveAccount} onPress={() => unlogUserAccept()}>
+          <TouchableOpacity style={styles.leaveAccount} onPress={unlogUserAccept}>
             <Text style={styles.leaveAccountText}>Выйти из аккаунта</Text>
           </TouchableOpacity>
         </View>
@@ -127,6 +137,14 @@ export default function accountScreen({ navigation }) {
         {isRegistering && ( // Регистрация
         <View style={styles.dataContainer}>
           <Text style={styles.title}>РЕГИСТРАЦИЯ</Text>
+          <TextInput
+            style={appStyle.mainStyles.input}
+            placeholder="Почта"
+            placeholderTextColor={appStyle.WHITE}
+            autoCorrect={false}
+            onChangeText={(text) => setUserMail(text)}
+            value={userMail}
+          />
           <TextInput
             style={appStyle.mainStyles.input}
             placeholder="Придумайте логин"
@@ -144,9 +162,20 @@ export default function accountScreen({ navigation }) {
             onChangeText={(text) => setPassword(text)}
             value={password}
           />
+
           <TouchableOpacity onPress={() => setSecure(!secure)}>
-            <Text style={{color: appStyle.MUTED, bottom: 15, textAlign: 'center'}}>Посмотреть пароль</Text>
+            <Text style={{color: appStyle.MUTED, bottom: 10, textAlign: 'center'}}>Посмотреть пароль</Text>
           </TouchableOpacity>
+
+          <View style={styles.genderContainer}>
+            <TouchableOpacity onPress={() => setFormGender(0)} style={[styles.genderBtn, formGender === 0 && {backgroundColor: '#003950'}]}>
+              <FontAwesome5 name='male' size={24} color='#00b7ff' />
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => setFormGender(1)} style={[styles.genderBtn, formGender === 1 && {backgroundColor: '#470024'}]}>
+              <FontAwesome5 name='female' size={24} color='#ff0080' />
+            </TouchableOpacity>
+          </View>
           
           <TouchableOpacity style={appStyle.mainStyles.button} onPress={handleSendRegistration}>
             <Text style={appStyle.mainStyles.buttonText}>ЗАРЕГЕСТРИРОВАТЬСЯ</Text>
@@ -194,6 +223,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Exo',
     textAlign: 'center',
     paddingTop: '20%'
+  },
+  genderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingBottom: 15
+  },
+  genderBtn: {
+    backgroundColor: appStyle.SURFACE_2,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 20,
+    width: '45%',
   },
   leaveAccount: {
     position: 'absolute',

@@ -1,128 +1,101 @@
-import mysql.connector, time
+import time, traceback
+import mysql.connector
+from mysql.connector import pooling, IntegrityError
 
-MYSQL_HOST: str
-MYSQL_USER: str
-MYSQL_PASSWORD: str
-MYSQL_DB: str
-mycursor = None
-mydb = None
+pool = None
 
 def read_env():
-     global MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB
      with open('./server/.env', 'r') as f:
           lines = f.readlines()
-          MYSQL_HOST = lines[0].strip().strip("'").strip('"')
-          MYSQL_USER = lines[1].strip().strip("'").strip('"')
-          MYSQL_PASSWORD = lines[2].strip().strip("'").strip('"')
-          MYSQL_DB = lines[3].strip().strip("'").strip('"')
+          return {
+               "host": lines[0].strip().strip("'").strip('"'),
+               "user": lines[1].strip().strip("'").strip('"'),
+               "password": lines[2].strip().strip("'").strip('"'),
+               "database": lines[3].strip().strip("'").strip('"'),
+          }
+
+def startDB():
+     global pool
+     pool = pooling.MySQLConnectionPool(
+          pool_name="yourdiet",
+          pool_size=5,
+          use_pure=True,
+          **read_env()
+     )
+     print("[+] Успех! База данных Your Diet успешно подключена.")
+
+def _run(sql: str, val: tuple = (), fetch: str | None = None, commit: bool = False):
+     conn = pool.get_connection()
+     try:
+          cur = conn.cursor(dictionary=True)
+          try:
+               cur.execute(sql, val)
+               result = None
+               if fetch == "one":
+                    result = cur.fetchone()
+               elif fetch == "all":
+                    result = cur.fetchall()
+               if commit:
+                    conn.commit()
+               return result
+          finally:
+               cur.close()
+     finally:
+          conn.close()
 
 def closeDB():
-     mycursor.close()
-     mydb.close()
      print("[+] База данных была закрыта.")
 
-def registerUser(username: str, password: str):
-     if userExist(username=username):
+def userExist(username: str) -> bool:
+     return _run("SELECT 1 FROM accounts WHERE username = %s", (username,), fetch="one") is not None
+
+def registerUser(username: str, password: str, mail: str, gender: int):
+     if userExist(username):
           print(f"[LOG] Пользователь {username} уже существует.")
           return "Пользователь с таким логином существует."
 
      try:
-          sql = "INSERT INTO accounts (username, password) VALUES (%s, %s)"
-          val = (username, password)
-          
-          mycursor.execute(sql, val)
-          mydb.commit()
+          _run(
+               "INSERT INTO accounts (username, password, mail, gender) VALUES (%s, %s, %s, %s)",
+               (username, password, mail, gender),
+               commit=True
+          )
           print(f"[LOG] Пользователь {username} успешно зарегистрирован в БД!")
-
           return True
-     except:
-          return False
+     except IntegrityError:
+          return "Пользователь с таким логином существует."
+     except Exception:
+          traceback.print_exc()
+          return "Не удалось зарегистрировать пользователя."
 
 def checkAuthorizationUserData(username: str, password: str) -> bool:
-     sql = "SELECT password FROM accounts WHERE username = %s"
-     val = (username,)
-
-     mycursor.execute(sql, val)
-
-     result = mycursor.fetchone()
-
-     if result == None:
-          return False
-
-     if password == result[0]:
-          return True
-     return False
-
-def userExist(username: str):
-     sql = "SELECT * FROM accounts WHERE username = %s"
-     val = (username,)
-     mycursor.execute(sql,val)
-     result = mycursor.fetchone()
-     if result == None:
-          return False
-     else:
-          return True
+     row = _run("SELECT password FROM accounts WHERE username = %s", (username,), fetch="one")
+     return row is not None and row["password"] == password
 
 def getUsernameByUserID(userID: int):
-     sql = "SELECT username FROM accounts WHERE id = %s"
-     val = (userID,)
-
-     mycursor.execute(sql, val)
-
-     result = mycursor.fetchone()
-
-     if result:
-          return result[0]
-     return None
+     row = _run("SELECT username FROM accounts WHERE id = %s", (userID,), fetch="one")
+     return row["username"] if row else None
 
 def getUserIDByUsername(username: str):
-     sql = "SELECT id FROM accounts WHERE username = %s"
-     val = (username,)
+     row = _run("SELECT id FROM accounts WHERE username = %s", (username,), fetch="one")
+     return row["id"] if row else None
 
-     mycursor.execute(sql, val)
-
-     result = mycursor.fetchone()
-
-     if result:
-          return result[0]
-     return None
+def getUserProfile(username: str):
+     return _run("SELECT mail, gender FROM accounts WHERE username = %s", (username,), fetch="one")
 
 def createHistory(userID: int, foodID: int, grams: int, calories: float, fats: float, proteins: float, carbs: float):
-     sql = "INSERT INTO history (userID, time, foodID, grams, calories, fats, proteins, carbs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-     val = (userID, int(time.time()), foodID, grams, calories, fats, proteins, carbs)
-
-     mycursor.execute(sql, val)
-     mydb.commit()
-     print(f"[LOG] История употребления пищи была зарегестрирована.")
-
-def findHistories(userID: int, timeStart: int, timeEnd: int):
-     sql = "SELECT * FROM history WHERE time >= %s AND time <= %s AND userID = %s ORDER BY time"
-     val = (timeStart, timeEnd, userID)
-
-     mycursor.execute(sql, val)
-
-     result: tuple = mycursor.fetchall()
-
-     if result:
-          return result
-     return None
-
-def startDB():
-     global mycursor, mydb
-
-     read_env()
-
-     mydb = mysql.connector.connect(
-          host=MYSQL_HOST,
-          user=MYSQL_USER,
-          password=MYSQL_PASSWORD,
-          database=MYSQL_DB,
-          use_pure=True
+     _run(
+          "INSERT INTO history (userID, time, foodID, grams, calories, fats, proteins, carbs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+          (userID, int(time.time()), foodID, grams, calories, fats, proteins, carbs),
+          commit=True
      )
+     print("[LOG] История употребления пищи была зарегистрирована.")
 
-     mycursor = mydb.cursor()
-
-     if mydb.is_connected():
-          print("[+] Успех! База данных Your Diet успешно подключена.")
+def findHistories(userID: int, timeStart: int, timeEnd: int) -> list:
+     return _run(
+          "SELECT * FROM history WHERE time >= %s AND time <= %s AND userID = %s ORDER BY time",
+          (timeStart, timeEnd, userID),
+          fetch="all"
+     )
 
 startDB()
