@@ -21,12 +21,21 @@ def closeDB():
      mydb.close()
 
 def registerUser(username: str, password: str):
-     sql = "INSERT INTO accounts (username, password) VALUES (%s, %s)"
-     val = (username, password)
-     
-     mycursor.execute(sql, val)
-     mydb.commit()
-     print(f"[LOG] Пользователь {username} успешно зарегистрирован в БД!")
+     if userExist(username=username):
+          print(f"[LOG] Пользователь {username} уже существует.")
+          return "Пользователь с таким логином существует."
+
+     try:
+          sql = "INSERT INTO accounts (username, password) VALUES (%s, %s)"
+          val = (username, password)
+          
+          mycursor.execute(sql, val)
+          mydb.commit()
+          print(f"[LOG] Пользователь {username} успешно зарегистрирован в БД!")
+
+          return True
+     except:
+          return False
 
 def checkAuthorizationUserData(username: str, password: str) -> bool:
      sql = "SELECT password FROM accounts WHERE username = %s"
@@ -42,6 +51,16 @@ def checkAuthorizationUserData(username: str, password: str) -> bool:
      if password == result[0]:
           return True
      return False
+
+def userExist(username: str):
+     sql = "SELECT * FROM accounts WHERE username = %s"
+     val = (username,)
+     mycursor.execute(sql,val)
+     result = mycursor.fetchone()
+     if result == None:
+          return False
+     else:
+          return True
 
 def getUsernameByUserID(userID: int):
      sql = "SELECT username FROM accounts WHERE id = %s"
