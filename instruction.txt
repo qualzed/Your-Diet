@@ -9,3 +9,11 @@ Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 
 Чтобы включить пишем
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True
+
+При возможных проблемах открыть Powershell и прописать
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
+Потом установить всё снова и использовать expo-doctor
+npm install
+npx expo install --fix
+npx expo-doctor

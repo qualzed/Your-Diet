@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { NavigationContainer } from 'expo-router/react-navigation';
-import { createBottomTabNavigator } from 'expo-router/js-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { FG_COLOR, TAB_COLOR} from './pages/appScreen';
 

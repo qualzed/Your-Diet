@@ -3,10 +3,10 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { Dropdown } from 'react-native-element-dropdown';
-import { sendCalculation, getProductList } from '../client';
 import { TextInput, TouchableOpacity, Pressable, Keyboard } from 'react-native';
-import { writeUserFoodHistory } from './historyScreen.js';
 import { StyleSheet, Text, View } from 'react-native';
+import { sendCalculation, getProductList } from '../client';
+import { writeUserFoodHistory } from './historyScreen.js';
 import * as appStyle from './styles/main.js';
 import { isUserLoggedIn } from '../account/user.js';
 
