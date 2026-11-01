@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as appStyle from './styles/main.js';
 import { isUserLoggedIn } from '../account/user.js';
 import { API_URL } from "../api/main.js";
+import { mainStyles } from './styles/main.js';
 
 export async function writeUserFoodHistory(userID, foodID, grams, calories, protein, fat, carbs) {
     try {
@@ -12,7 +12,7 @@ export async function writeUserFoodHistory(userID, foodID, grams, calories, prot
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ // || Нужен чтобы установить стандартные значение, а не передавать NaN / None
+            body: JSON.stringify({ 
                 userID: parseInt(userID) || 1,
                 foodID: parseInt(foodID) || 0,
                 grams: parseInt(grams) || 0,
@@ -32,9 +32,23 @@ export async function writeUserFoodHistory(userID, foodID, grams, calories, prot
 };
 
 export default function historyScreen({ navigation }) {
+  const [isAuth, setIsAuth] = useState(true);
+
+  useEffect(() => { 
+    isUserLoggedIn().then(setIsAuth); 
+  }, []);
+
   return (
     <View style={styles.container}>
+      {!isAuth && (
+        <View style={styles.mustAuth}>
+          <Text style={mainStyles.centeredText}>
+            Вы должны быть авторизованы для просмотра своей истории.
+          </Text>
+        </View>
+      )}
       
+      {/* Здесь будет код для авторизованных пользователей */}
     </View>
   );
 };
@@ -43,5 +57,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: appStyle.BG_COLOR,
+  },
+  mustAuth: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });

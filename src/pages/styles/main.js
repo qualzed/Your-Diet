@@ -43,4 +43,12 @@ export const mainStyles = StyleSheet.create({
           fontSize: 17,
           letterSpacing: 2,
      },
+     centeredText: {
+          color: WHITE,
+          fontFamily: 'exo',
+          fontSize: 16,
+          letterSpacing: 2,
+          textAlign: 'center',
+          padding: 15
+     }
 });
