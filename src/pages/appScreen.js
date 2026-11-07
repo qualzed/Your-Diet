@@ -1,5 +1,3 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { Dropdown } from 'react-native-element-dropdown';

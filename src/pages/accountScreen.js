@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { StyleSheet, Text, View, Alert, ScrollView, KeyboardAvoidingView, Platform, StatusBar } from 'react-native';
 import { TextInput, TouchableOpacity, Keyboard } from 'react-native';
-import { sendAutharization, isUserLoggedIn, makeUserLoggedIn, unlogUser, sendRegistration, getUserUsername, setUserUsername, getUserProfile } from '../account/user.js';
+import { Host, Switch } from '@expo/ui';
+import { sendAutharization, isUserLoggedIn, makeUserLoggedIn, unlogUser, sendRegistration, getUserUsername, setUserUsername, getUserProfile, returnHistorySaveStatus, updateHistorySaveStatus } from '../account/user.js';
 import * as appStyle from './styles/main.js';
 
 const GENDERS = { 0: 'Мужчина', 1: 'Женщина' };
 const EMPTY_PROFILE = { username: '', mail: '', gender: null, userID: null };
+const ICON_SIZE = 16;
 
 export default function accountScreen({ navigation }) {
   const [profile, setProfile] = useState(EMPTY_PROFILE);
@@ -19,6 +21,7 @@ export default function accountScreen({ navigation }) {
   const [authorized, setAuthorized] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [historyEnabled, setHistoryEnabled] = useState(false);
 
   const loadProfile = async () => {
     const savedUsername = await getUserUsername();
@@ -39,6 +42,8 @@ export default function accountScreen({ navigation }) {
     (async () => {
       try {
         const loggedIn = await isUserLoggedIn();
+        const history = await returnHistorySaveStatus();
+        setHistoryEnabled(history);
         setAuthorized(loggedIn);
         if (loggedIn) await loadProfile();
       } finally {
@@ -110,7 +115,7 @@ export default function accountScreen({ navigation }) {
 
   const renderInput = (placeholder, value, onChangeText, icon, options = {}) => (
     <View style={styles.inputContainer}>
-      <FontAwesome5 name={icon} size={15} color="#78958A" />
+      <FontAwesome5 name={icon} size={ICON_SIZE} color="#78958A" />
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -164,13 +169,25 @@ export default function accountScreen({ navigation }) {
             <View style={styles.divider} />
 
             <View style={styles.infoRow}>
-              <FontAwesome5 name="envelope" size={15} color="#78B99A" />
+              <FontAwesome5 name="envelope" size={ICON_SIZE} color="#78B99A" />
               <Text style={styles.infoText}>{profile.mail || 'Почта не указана'}</Text>
             </View>
 
             <View style={styles.infoRow}>
-              <FontAwesome5 name="fingerprint" size={15} color="#78B99A" />
+              <FontAwesome5 name="fingerprint" size={ICON_SIZE} color="#78B99A" />
               <Text style={styles.infoText}>ID: {profile.userID || '—'}</Text>
+            </View>
+
+            {/* Тумблеры */}
+            <View style={styles.infoRow}> 
+              <FontAwesome5 name="clock" size={ICON_SIZE} color="#78B99A"/>
+              <Text style={styles.infoText}>Сохранять историю БЖУ</Text>
+              <Host matchContents>
+                <Switch value={historyEnabled} onValueChange={(value) => {
+                  setHistoryEnabled(value);
+                  updateHistorySaveStatus(value);
+                }}/>
+              </Host>
             </View>
 
             <TouchableOpacity style={styles.logoutButton} onPress={unlogUserAccept}>
@@ -206,7 +223,7 @@ export default function accountScreen({ navigation }) {
               )}
 
               <View style={styles.inputContainer}>
-                <FontAwesome5 name="lock" size={15} color="#78958A" />
+                <FontAwesome5 name="lock" size={ICON_SIZE} color="#78958A" />
                 <TextInput
                   style={styles.input}
                   placeholder="Пароль"
@@ -258,7 +275,7 @@ export default function accountScreen({ navigation }) {
               <Text style={styles.submitButtonText}>
                 {isRegistering ? 'ЗАРЕГИСТРИРОВАТЬСЯ' : 'ВОЙТИ'}
               </Text>
-              <FontAwesome5 name="arrow-right" size={15} color="#102019" />
+              <FontAwesome5 name="arrow-right" size={ICON_SIZE} color="#102019" />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -370,7 +387,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
     marginBottom: 10,
-    gap: 13
+    gap: 15
   },
   infoText: {
     color: appStyle.WHITE,

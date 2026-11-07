@@ -78,6 +78,20 @@ export const isUserLoggedIn = async () => {
 
 export const makeUserLoggedIn = async () => {
      await storage.setItem("loginStatus", "true");
+     await storage.setItem("calcHistory", "false");
+};
+
+export async function updateHistorySaveStatus(status) {
+     await storage.setItem("calcHistory", status);
+};
+
+export const returnHistorySaveStatus = async () => {
+     const status = await storage.getItem("calcHistory");
+     if (status === "true") {
+          return true;
+     } else {
+          return false;
+     }
 };
 
 export async function getUserProfile(username) {
@@ -98,6 +112,7 @@ export async function getUserProfile(username) {
 export const unlogUser = async () => {
      await storage.removeItem("loginStatus");
      await storage.removeItem("username");
+     await storage.removeItem("calcHistory");
 };
 
 export const getUserUsername = async () => {
