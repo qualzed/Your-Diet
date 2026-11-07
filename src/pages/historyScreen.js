@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import * as appStyle from './styles/main.js';
 import { isUserLoggedIn } from '../account/user.js';
 import { API_URL } from "../api/main.js";
@@ -31,24 +32,36 @@ export async function writeUserFoodHistory(userID, foodID, grams, calories, prot
     }
 };
 
-export default function historyScreen({ navigation }) {
-  const [isAuth, setIsAuth] = useState(true);
 
-  useEffect(() => { 
-    isUserLoggedIn().then(setIsAuth); 
-  }, []);
+export default function historyScreen({ navigation }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      async function check() {
+        const loggedIn = await isUserLoggedIn(); 
+        if (isLoggedIn !== loggedIn) {
+          setIsLoggedIn(loggedIn);
+        }
+      }
+      
+      check();
+    }, [isLoggedIn])
+  );
 
   return (
     <View style={styles.container}>
-      {!isAuth && (
+      {!isLoggedIn ? (
         <View style={styles.mustAuth}>
           <Text style={mainStyles.centeredText}>
             Вы должны быть авторизованы для просмотра своей истории.
           </Text>
         </View>
+      ) : (
+        <View>
+          {/* Здесь надо будет сделать саму историю, получение, показ и всякое такое */}
+        </View>
       )}
-      
-      {/* Здесь будет код для авторизованных пользователей */}
     </View>
   );
 };

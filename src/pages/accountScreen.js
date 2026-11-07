@@ -142,7 +142,7 @@ export default function accountScreen({ navigation }) {
             <Text style={styles.headerSubtitle}>YOUR DIET</Text>
             <Text style={styles.headerTitle}>Аккаунт</Text>
           </View>
-          <FontAwesome5 name="user-circle" size={29} color="#78B99A" />
+          <FontAwesome5 name="user-circle" size={28} color="#78B99A" style={{ marginTop: 50 }}/>
         </View>
 
         {loading ? (
@@ -299,18 +299,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 28
+    marginBottom: 28,
   },
   headerSubtitle: {
     color: '#80C69B',
     fontSize: 10,
     fontWeight: 'bold',
     letterSpacing: 3,
-    marginBottom: 5
+    marginTop: 50
   },
   headerTitle: {
     color: appStyle.WHITE,
-    fontSize: 29,
+    fontSize: 30,
     fontWeight: 'bold',
     fontFamily: 'Exo'
   },
